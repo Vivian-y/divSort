@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		ul{
+			padding:20px;
+			border:3px solid blue;
+		}
+		li{
+			list-style:none;
+			float:left;
+			width:200px;
+			height:200px;
+			background:red;
+			margin-right:20px;
+			position:relative;
+			position:absolute;
+			left:20px;
+			text-align:center;
+			line-height: 200px;
+			font-size:30px;
+		}
+		li:last-child{
+			margin-right:0px;
+		}
+		span{
+			width:40px;
+			height:40px;
+			background:#ccc;
+			position:absolute;
+			bottom:38%;
+			line-height: 40px;
+			text-align: center;
+		}
+		.left{
+			left:0;
+		}
+		.right{
+			right:0;
+		}
+		.close{
+			right:0;
+			top:0;
+			color:white;
+			background:none;
+		}
+	</style>
+</head>
+<body>
+	<ul>
+		<li style='background:red'>
+			1
+			<span class="left"><</span>
+			<span class="right">></span>
+			<span class='close'>X</span>
+		</li>
+		<li style='background:yellow'>
+			2
+			<span class="left"><</span>
+			<span class="right">></span>
+			<span class='close'>X</span>
+		</li>
+		<li style='background:green'>
+			3
+			<span class="left"><</span>
+			<span class="right">></span>
+			<span class='close'>X</span>
+		</li>
+		<li style='background:pink'>
+			4
+			<span class="left"><</span>
+			<span class="right">></span>
+			<span class='close'>X</span>
+		</li>
+	</ul>
+	<script src="js/jquery.js"></script>
+	<script>
+		function css(){
+			var len=$('ul li').length;
+			var liw=$('ul li').width()
+			$('ul').css({
+				'width':liw*len+(len-1)*20+'px',
+				'height':liw+'px'
+			})
+			$.each($('ul li'),function(){
+				var liw=$('li').width()
+				var idx=$(this).index()
+				$(this).css('left',liw*idx+20*(idx+1)+'px')
+			})
+		}
+		function init(){
+			css()
+			addEvent()
+		}
+		function addEvent(){
+			var liw=$('li').width()
+			$('.close').on('click',function(){
+				$(this).parent('li').remove()
+				css()
+			})
+			$('.left').on('click',function(){
+				var obj=$(this).parent('li');
+				var zuo=obj.offset().left;
+				var index=obj.index();
+				if(index=='0'){
+					$('ul').append(obj)
+					change()
+				}else{
+					obj.css({
+						'left':zuo-1*(liw+20)+'px'
+						//'-webkit-transition':'left .5s linear'
+					})
+					$(this).parents('ul').find('li').eq(index-1).css({
+						'left':zuo+'px',
+						'-webkit-transition':'left .5s linear'
+					})
+					$('ul li').eq(index-1).before(obj)
+				}
+				
+			})
+			$('.right').on('click',function(){
+				var obj=$(this).parent('li');
+				var zuo=obj.offset().left
+				var index=obj.index()
+				var len=$('ul li').length
+				if(index==len-1){
+					$('ul').prepend(obj)
+					change()
+				}else{
+					obj.css({
+						'left':zuo+1*(liw+20)+'px'
+						//'-webkit-transition':'left .5s linear'
+					})
+					$(this).parents('ul').find('li').eq(index+1).css({
+						'left':zuo+'px',
+						'-webkit-transition':'left .5s linear'
+					})
+					$('ul li').eq(index+1).after(obj)
+				}
+				
+			})
+		}
+		function change(){
+			$.each($('ul li'),function(i){
+				var liw=$('li').width()
+				$(this).css({
+					'left':liw*i+20*(i+1)+'px',
+					'-webkit-transition':'left .5s linear'
+				})
+			})
+		}
+		init()
+	</script>
+</body>
+</html>
